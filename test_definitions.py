@@ -1,7 +1,7 @@
 from essm.variables._core import BaseVariable, Variable
 from essm.equations import Equation
 from sympy import Abs, Derivative, Eq, exp, Integral, log, Piecewise, sqrt
-from sympy.physics.units import mole, kilogram, kelvin, pascal, meter, second, watt, joule
+from sympy.physics.units import second, kilogram, joule, watt, kelvin, pascal, mole, meter
 c_pi = type('c_pi', (Variable,), {'__doc__': """Heat capacity of insulation material.""", 'unit': joule/(kelvin*kilogram), 'assumptions': {'real': True},         'latex_name': r"c_{pi}", 'default': None, 'expr': None})
 lambda_i = type('lambda_i', (Variable,), {'__doc__': """Heat conductivity of insulation material.""", 'unit': joule/(kelvin*meter*second), 'assumptions': {'real': True},         'latex_name': r"lambda_i", 'default': None, 'expr': None})
 rho_i = type('rho_i', (Variable,), {'__doc__': """Density of insulation material.""", 'unit': kilogram/meter**3, 'assumptions': {'real': True},         'latex_name': r"rho_i", 'default': None, 'expr': None})
