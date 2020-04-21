@@ -1,7 +1,7 @@
 from essm.variables._core import BaseVariable, Variable
 from essm.equations import Equation
 from sympy import Abs, Derivative, Eq, exp, Integral, log, Piecewise, sqrt
-from sympy.physics.units import joule, watt, meter, pascal, second, mole, kilogram, kelvin
+from sympy.physics.units import second, watt, meter, kelvin, joule, mole, kilogram, pascal
 c_pi = type('c_pi', (Variable,), {'__doc__': """Heat capacity of insulation material.""", 'unit': joule/(kelvin*kilogram), 'assumptions': {'real': True},         'latex_name': r"c_{pi}", 'default': None, 'expr': None})
 lambda_i = type('lambda_i', (Variable,), {'__doc__': """Heat conductivity of insulation material.""", 'unit': joule/(kelvin*meter*second), 'assumptions': {'real': True},         'latex_name': r"lambda_i", 'default': None, 'expr': None})
 rho_i = type('rho_i', (Variable,), {'__doc__': """Density of insulation material.""", 'unit': kilogram/meter**3, 'assumptions': {'real': True},         'latex_name': r"rho_i", 'default': None, 'expr': None})
@@ -84,5 +84,5 @@ eq_ideal_gas_law = type('eq_ideal_gas_law', (Equation,), {'__doc__': """Ideal ga
 eq_Pg = type('eq_Pg', (Equation,), {'__doc__': """Calculate pressure of ideal gas.""", 'expr': Eq(P_g, R_mol*T_g*n_g/V_g)})
 eq_Pwa_nw = type('eq_Pwa_nw', (Equation,), {'__doc__': """Calculate vapour pressure from amount of water in gas.""", 'expr': Eq(P_wa, R_mol*T_g*n_w/V_g)})
 eq_Pwa_CC = type('eq_Pwa_CC', (Equation,), {'__doc__': """Clausius-Clapeyron P_wa as function of T_g.       Eq. B3 in :cite{hartmann_global_1994}     """, 'expr': Eq(P_wa, p_CC1*exp(-M_w*lambda_E*(-1/p_CC2 + 1/T_g)/R_mol))})
-eq1 = type('eq1', (Equation,), {'__doc__': """Test""", 'expr': Eq(P_wa, Piecewise((0, T_a < 0), (p_CC1*exp(-M_w*lambda_E*(-1/p_CC2 + 1/T_g)/R_mol), True)))})
+eq1 = type('eq1', (Equation,), {'__doc__': """Test""", 'expr': Eq(P_wa, Piecewise((0, T_g <= 0), (p_CC1*exp(-M_w*lambda_E*(-1/p_CC2 + 1/T_g)/R_mol), True)))})
 eq_Pwa_Delta = type('eq_Pwa_Delta', (Equation,), {'__doc__': """P_wa deduced from the integral of Delta""", 'expr': Eq(P_wa, P_wa1 + Integral(Delta_Pwa, (T_g, T_a1, T_a2)))})
