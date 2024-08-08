@@ -1,14 +1,7 @@
 from essm.variables._core import BaseVariable, Variable
 from essm.equations import Equation
 from sympy import Abs, Derivative, Eq, exp, Integral, log, Piecewise, sqrt
-from sympy.physics.units import mole, kilogram, pascal, second, watt, joule, kelvin, meter
-c_pi = type('c_pi', (Variable,), {'__doc__': """Heat capacity of insulation material.""", 'unit': joule/(kelvin*kilogram), 'assumptions': {'real': True},         'latex_name': r"c_{pi}", 'default': None, 'expr': None})
-lambda_i = type('lambda_i', (Variable,), {'__doc__': """Heat conductivity of insulation material.""", 'unit': joule/(kelvin*meter*second), 'assumptions': {'real': True},         'latex_name': r"lambda_i", 'default': None, 'expr': None})
-rho_i = type('rho_i', (Variable,), {'__doc__': """Density of insulation material.""", 'unit': kilogram/meter**3, 'assumptions': {'real': True},         'latex_name': r"rho_i", 'default': None, 'expr': None})
-L_i = type('L_i', (Variable,), {'__doc__': """Thickness of insulation material.""", 'unit': meter, 'assumptions': {'real': True},         'latex_name': r"L_i", 'default': None, 'expr': None})
-A_i = type('A_i', (Variable,), {'__doc__': """Conducting area of insulation material.""", 'unit': meter**2, 'assumptions': {'real': True},         'latex_name': r"A_i", 'default': None, 'expr': None})
-Q_i = type('Q_i', (Variable,), {'__doc__': """Heat conduction through insulation material.""", 'unit': joule/second, 'assumptions': {'real': True},         'latex_name': r"Q_i", 'default': None, 'expr': None})
-dT_i = type('dT_i', (Variable,), {'__doc__': """Temperature increment of insulation material.""", 'unit': kelvin, 'assumptions': {'real': True},         'latex_name': r"dT_i", 'default': None, 'expr': None})
+from sympy.physics.units import mole, kilogram, pascal, watt, meter, joule, second, kelvin
 alpha_a = type('alpha_a', (Variable,), {'__doc__': """Thermal diffusivity of dry air.""", 'unit': meter**2/second, 'assumptions': {'real': True},         'latex_name': r"\alpha_a", 'default': None, 'expr': None})
 c_pa = type('c_pa', (Variable,), {'__doc__': """Specific heat of dry air.""", 'unit': joule/(kelvin*kilogram), 'assumptions': {'real': True},         'latex_name': r"c_{pa}", 'default': 1010.0, 'expr': None})
 c_pamol = type('c_pamol', (Variable,), {'__doc__': """Molar specific heat of dry air.      https://en.wikipedia.org/wiki/Heat_capacity#Specific_heat_capacity     """, 'unit': joule/(kelvin*mole), 'assumptions': {'real': True},         'latex_name': r"c_{pa,mol}", 'default': 29.19, 'expr': None})
@@ -60,13 +53,13 @@ n_g = type('n_g', (Variable,), {'__doc__': """Amount of gas.""", 'unit': mole, '
 n_w = type('n_w', (Variable,), {'__doc__': """Amount of water.""", 'unit': mole, 'assumptions': {'real': True},         'latex_name': r"n_w", 'default': None, 'expr': None})
 T_g = type('T_g', (Variable,), {'__doc__': """Temperature of gas.""", 'unit': kelvin, 'assumptions': {'real': True},         'latex_name': r"T_g", 'default': None, 'expr': None})
 Delta_Pwa = type('Delta_Pwa', (Variable,), {'__doc__': """Slope of saturated vapour pressure, $\partial P_{wa} / \partial T_g$""", 'unit': pascal/kelvin, 'assumptions': {'real': True},         'latex_name': r"\Delta", 'default': None, 'expr': Derivative(P_wa, T_g)})
+x = type('x', (Variable,), {'__doc__': """Any variable.""", 'unit': 1, 'assumptions': {'real': True},         'latex_name': r"x", 'default': None, 'expr': None})
 x = type('x', (Variable,), {'__doc__': """Positive real variable.""", 'unit': 1, 'assumptions': {'positive': True, 'real': True},         'latex_name': r"x", 'default': None, 'expr': None})
 p_CC1 = type('p_CC1', (Variable,), {'__doc__': """Internal parameter of eq_Pwl.""", 'unit': pascal, 'assumptions': {'real': True},         'latex_name': r"611", 'default': 611.0, 'expr': None})
 p_CC2 = type('p_CC2', (Variable,), {'__doc__': """Internal parameter of eq_Pwl.""", 'unit': kelvin, 'assumptions': {'real': True},         'latex_name': r"273", 'default': 273.0, 'expr': None})
 T_a1 = type('T_a1', (Variable,), {'__doc__': """Air temperature""", 'unit': kelvin, 'assumptions': {'real': True},         'latex_name': r"T_{a1}", 'default': None, 'expr': None})
 T_a2 = type('T_a2', (Variable,), {'__doc__': """Air temperature""", 'unit': kelvin, 'assumptions': {'real': True},         'latex_name': r"T_{a2}", 'default': None, 'expr': None})
 P_wa1 = type('P_wa1', (Variable,), {'__doc__': """P_wa at T1""", 'unit': pascal, 'assumptions': {'real': True},         'latex_name': r"P_{wa1}", 'default': None, 'expr': None})
-eq_Qi = type('eq_Qi', (Equation,), {'__doc__': """Calculate ....      :cite:`schymanski_leaf-scale_2017`     """, 'expr': Eq(Q_i, A_i*dT_i*lambda_i/L_i)})
 eq_Le = type('eq_Le', (Equation,), {'__doc__': """Le as function of alpha_a and D_va.      (Eq. B3 in :cite:`schymanski_leaf-scale_2017`)     """, 'expr': Eq(Le, alpha_a/D_va)})
 eq_Cwa = type('eq_Cwa', (Equation,), {'__doc__': """C_wa as a function of P_wa and T_a.      (Eq. B9 in :cite:`schymanski_leaf-scale_2017`)     """, 'expr': Eq(C_wa, P_wa/(R_mol*T_a))})
 eq_Nu_forced_all = type('eq_Nu_forced_all', (Equation,), {'__doc__': """Nu as function of Re and Re_c under forced conditions.      (Eqs. B13--B15 in :cite:`schymanski_leaf-scale_2017`)     """, 'expr': Eq(Nu, -Pr**(1/3)*(-37*Re**(4/5) + 37*(Re + Re_c - Abs(Re - Re_c)/2)**(4/5) - 664*sqrt(Re + Re_c - Abs(Re - Re_c)/2))/1000)})

@@ -1,0 +1,3 @@
+[submodule "ESSM_plotting"]
+	path = ESSM_plotting
+	url = https://github.com/schymans/ESSM_plotting.git
