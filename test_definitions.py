@@ -1,7 +1,7 @@
 from essm.variables._core import BaseVariable, Variable
 from essm.equations import Equation
 from sympy import Abs, Derivative, Eq, exp, Integral, log, Piecewise, sqrt
-from sympy.physics.units import mole, kilogram, pascal, watt, meter, joule, second, kelvin
+from sympy.physics.units import joule, watt, kilogram, kelvin, mole, pascal, meter, second
 alpha_a = type('alpha_a', (Variable,), {'__doc__': """Thermal diffusivity of dry air.""", 'unit': meter**2/second, 'assumptions': {'real': True},         'latex_name': r"\alpha_a", 'default': None, 'expr': None})
 c_pa = type('c_pa', (Variable,), {'__doc__': """Specific heat of dry air.""", 'unit': joule/(kelvin*kilogram), 'assumptions': {'real': True},         'latex_name': r"c_{pa}", 'default': 1010.0, 'expr': None})
 c_pamol = type('c_pamol', (Variable,), {'__doc__': """Molar specific heat of dry air.      https://en.wikipedia.org/wiki/Heat_capacity#Specific_heat_capacity     """, 'unit': joule/(kelvin*mole), 'assumptions': {'real': True},         'latex_name': r"c_{pa,mol}", 'default': 29.19, 'expr': None})
