@@ -13,6 +13,7 @@ dependencies:
   - scikit-learn
   - matplotlib
   - openpyxl
+  - fortran-compiler
   - setuptools<68
   - itables
   - pip
