@@ -1,7 +1,7 @@
 from essm.variables._core import BaseVariable, Variable
 from essm.equations import Equation
 from sympy import Abs, exp, Float, log, nsolve, Eq, sqrt, solve, Symbol
-from sympy.physics.units import second, pascal, mole, joule, meter, watt, kelvin, kilogram
+from sympy.physics.units import mole, meter, joule, pascal, kilogram, kelvin, second, watt
 alpha_a = type('alpha_a', (Variable,), {'__doc__': """Thermal diffusivity of dry air.""", 'unit': meter**2/second, 'assumptions': {'real': True},         'latex_name': r'\alpha_a', 'default': None, 'expr': None})
 c_pa = type('c_pa', (Variable,), {'__doc__': """Specific heat of dry air.""", 'unit': joule/(kelvin*kilogram), 'assumptions': {'real': True},         'latex_name': r'c_{pa}', 'default': 1010.0, 'expr': None})
 c_pamol = type('c_pamol', (Variable,), {'__doc__': """Molar specific heat of dry air.
@@ -94,6 +94,7 @@ epsilon = type('epsilon', (Variable,), {'__doc__': """Water to air molecular wei
 E_w = type('E_w', (Variable,), {'__doc__': """Latent heat flux from a wet surface""", 'unit': joule/(meter**2*second), 'assumptions': {'real': True},         'latex_name': r'E_w', 'default': None, 'expr': None})
 f_u = type('f_u', (Variable,), {'__doc__': """Wind function in Penman approach, f(u) adapted to energetic units""", 'unit': joule/(meter**2*pascal*second), 'assumptions': {'real': True},         'latex_name': r'f_u', 'default': None, 'expr': None})
 gamma_v = type('gamma_v', (Variable,), {'__doc__': """Psychrometric constant""", 'unit': pascal/kelvin, 'assumptions': {'real': True},         'latex_name': r'\gamma_v', 'default': None, 'expr': None})
+gamma_vs = type('gamma_vs', (Variable,), {'__doc__': """Psychrometric constant considering stomatal resistance""", 'unit': pascal/kelvin, 'assumptions': {'real': True},         'latex_name': r'\gamma_{vs}', 'default': None, 'expr': None})
 n_MU = type('n_MU', (Variable,), {'__doc__': """n=2 for hypostomatous, n=1 for amphistomatous leaves""", 'unit': 1, 'assumptions': {'real': True},         'latex_name': r'n_{MU}', 'default': None, 'expr': a_sh/a_s})
 r_a = type('r_a', (Variable,), {'__doc__': """One-sided boundary layer resistance to heat transfer ($r_H$ in \citet[][P. 231]{monteith_principles_2013})""", 'unit': second/meter, 'assumptions': {'real': True},         'latex_name': r'r_a', 'default': None, 'expr': None})
 r_v = type('r_v', (Variable,), {'__doc__': """One-sided leaf BL resistance to water vapour, \citep[][Eqs. 11.3 and 13.16]{monteith_principles_2013}""", 'unit': second/meter, 'assumptions': {'real': True},         'latex_name': r'r_{v}', 'default': None, 'expr': None})
@@ -202,6 +203,10 @@ eq_Gr = type('eq_Gr', (Equation,), {'__doc__': """Gr as function of air density 
 
     (Eq. B12 in :cite:`schymanski_leaf-scale_2017`)
     """, 'expr': Eq(Gr, L_l**3*g*(rho_a - rho_al)/(nu_a**2*rho_al))})
+eq_Nu_forced_all = type('eq_Nu_forced_all', (Equation,), {'__doc__': """Nu as function of Re and Re_c under forced conditions.
+
+    (Eqs. B13--B15 in :cite:`schymanski_leaf-scale_2017`)
+    """, 'expr': Eq(Nu, Pr**(1/3)*(37*Re**(4/5) - 37*(Re/2 + Re_c/2 - Abs(Re - Re_c)/2)**(4/5) + 664*sqrt(Re/2 + Re_c/2 - Abs(Re - Re_c)/2))/1000)})
 eq_Ew_fu = type('eq_Ew_fu', (Equation,), {'__doc__': """Penman water vapour diffusion.""", 'expr': Eq(E_w, f_u*(-P_wa + P_wl))})
 eq_beta_B = type('eq_beta_B', (Equation,), {'__doc__': """Penman Bowen ratio.""", 'expr': Eq(beta_B, gamma_v*(-T_a + T_l)/(-P_wa + P_wl))})
 eq_Penman_ass = type('eq_Penman_ass', (Equation,), {'__doc__': """""", 'expr': Eq(Delta_eTa, (-P_was + P_wl)/(-T_a + T_l))})
@@ -229,9 +234,9 @@ eq_gammav_as = type('eq_gammav_as', (Equation,), {'__doc__': """""", 'expr': Eq(
 eq_S_gbw_gsw = type('eq_S_gbw_gsw', (Equation,), {'__doc__': """""", 'expr': Eq(S, g_sw/(g_bw + g_sw))})
 eq_fu_ra_M = type('eq_fu_ra_M', (Equation,), {'__doc__': """""", 'expr': Eq(f_u, c_pa*rho_a/(gamma_v*r_a))})
 eq_Ew_PM1 = type('eq_Ew_PM1', (Equation,), {'__doc__': """""", 'expr': Eq(E_w, (-Delta_eTa*R_ll + Delta_eTa*R_s - P_wa*c_pa*rho_a/r_a + P_was*c_pa*rho_a/r_a)/(Delta_eTa + gamma_v))})
-eq_gammavs_M65 = type('eq_gammavs_M65', (Equation,), {'__doc__': """""", 'expr': Eq(gamma_v, gamma_v*(1 + r_s/r_a))})
+eq_gammavs_M65 = type('eq_gammavs_M65', (Equation,), {'__doc__': """""", 'expr': Eq(gamma_vs, gamma_v*(1 + r_s/r_a))})
 eq_El_PM2 = type('eq_El_PM2', (Equation,), {'__doc__': """""", 'expr': Eq(E_l, (-Delta_eTa*R_ll + Delta_eTa*R_s - P_wa*c_pa*rho_a/r_a + P_was*c_pa*rho_a/r_a)/(Delta_eTa + gamma_v*(1 + r_s/r_a)))})
-eq_gammavs_MU = type('eq_gammavs_MU', (Equation,), {'__doc__': """""", 'expr': Eq(gamma_v, gamma_v*n_MU*(1 + r_s/r_a))})
+eq_gammavs_MU = type('eq_gammavs_MU', (Equation,), {'__doc__': """""", 'expr': Eq(gamma_vs, gamma_v*n_MU*(1 + r_s/r_a))})
 eq_El_MU2 = type('eq_El_MU2', (Equation,), {'__doc__': """""", 'expr': Eq(E_l, (-Delta_eTa*R_ll + Delta_eTa*R_s - P_wa*c_pa*rho_a/r_a + P_was*c_pa*rho_a/r_a)/(Delta_eTa + gamma_v*n_MU*(1 + r_s/r_a)))})
 eq_gammav_MU = type('eq_gammav_MU', (Equation,), {'__doc__': """""", 'expr': Eq(gamma_v, P_a*c_pa/(epsilon*lambda_E))})
 eq_epsilon = type('eq_epsilon', (Equation,), {'__doc__': """""", 'expr': Eq(epsilon, M_w*P_a/(R_mol*T_a*rho_a))})
@@ -263,7 +268,7 @@ eq_Hl_Delta_b = type('eq_Hl_Delta_b', (Equation,), {'__doc__': """""", 'expr': E
 eq_Pwl_Delta_b = type('eq_Pwl_Delta_b', (Equation,), {'__doc__': """""", 'expr': Eq(P_wl, (Delta_eTa*P_wa*c_E - Delta_eTa*R_ll + Delta_eTa*R_s + P_was*c_H)/(Delta_eTa*c_E + c_H))})
 eq_Tl_Delta_b = type('eq_Tl_Delta_b', (Equation,), {'__doc__': """""", 'expr': Eq(T_l, (P_wa*c_E - R_ll + R_s + T_a*c_H + c_E*(Delta_eTa*T_a - P_was))/(Delta_eTa*c_E + c_H))})
 eq_El_Delta_MUcorr = type('eq_El_Delta_MUcorr', (Equation,), {'__doc__': """Corrected MU-equation""", 'expr': Eq(E_l, -a_s*epsilon*lambda_E*(Delta_eTa*r_a*(R_ll - R_s) + P_wa*a_sh*c_pa*rho_a - P_was*a_sh*c_pa*rho_a)/(Delta_eTa*a_s*epsilon*lambda_E*r_a + P_a*a_sh*c_pa*(r_a + r_s)))})
-eq_El_MU_corr = type('eq_El_MU_corr', (Equation,), {'__doc__': """Corrected MU-equation, equivalent to Eq. 22 in \citet{schymanski_leaf-scale_2018}""", 'expr': Eq(E_l, (-Delta_eTa*R_ll + Delta_eTa*R_s - P_wa*a_sh*c_pa*rho_a/r_a + P_was*a_sh*c_pa*rho_a/r_a)/(Delta_eTa + a_sh*gamma_v*(1 + r_s/r_a)/a_s))})
+eq_El_MU_corr = type('eq_El_MU_corr', (Equation,), {'__doc__': """Corrected MU-equation, equivalent to Eq. 22 in \citet{schymanski_leaf-scale_2018}""", 'expr': Eq(E_w, (-Delta_eTa*R_ll + Delta_eTa*R_s - P_wa*a_sh*c_pa*rho_a/r_a + P_was*a_sh*c_pa*rho_a/r_a)/(Delta_eTa + a_sh*gamma_v*(1 + r_s/r_a)/a_s))})
 eq_Rll_tang = type('eq_Rll_tang', (Equation,), {'__doc__': """Linearised R_ll.""", 'expr': Eq(R_ll, a_sh*epsilon_l*sigm*(-3*T_a**4 + 4*T_a**3*T_l - T_w**4))})
 eq_El_Delta_Rlllin = type('eq_El_Delta_Rlllin', (Equation,), {'__doc__': """""", 'expr': Eq(E_l, c_E*(Delta_eTa*R_s - Delta_eTa*T_a**4*a_sh*epsilon_l*sigm + Delta_eTa*T_w**4*a_sh*epsilon_l*sigm - 4*P_wa*T_a**3*a_sh*epsilon_l*sigm - P_wa*c_H + 4*P_was*T_a**3*a_sh*epsilon_l*sigm + P_was*c_H)/(Delta_eTa*c_E + 4*T_a**3*a_sh*epsilon_l*sigm + c_H))})
 eq_Hl_Delta_Rlllin = type('eq_Hl_Delta_Rlllin', (Equation,), {'__doc__': """""", 'expr': Eq(H_l, c_H*(P_wa*c_E - P_was*c_E + R_s - T_a**4*a_sh*epsilon_l*sigm + T_w**4*a_sh*epsilon_l*sigm)/(Delta_eTa*c_E + 4*T_a**3*a_sh*epsilon_l*sigm + c_H))})
