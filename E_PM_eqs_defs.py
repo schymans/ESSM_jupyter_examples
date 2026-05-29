@@ -1,7 +1,7 @@
 from essm.variables._core import BaseVariable, Variable
 from essm.equations import Equation
 from sympy import Abs, exp, Float, log, nsolve, Eq, sqrt, solve, Symbol
-from sympy.physics.units import mole, meter, joule, pascal, kilogram, kelvin, second, watt
+from sympy.physics.units import watt, second, joule, mole, pascal, meter, kilogram, kelvin
 alpha_a = type('alpha_a', (Variable,), {'__doc__': """Thermal diffusivity of dry air.""", 'unit': meter**2/second, 'assumptions': {'real': True},         'latex_name': r'\alpha_a', 'default': None, 'expr': None})
 c_pa = type('c_pa', (Variable,), {'__doc__': """Specific heat of dry air.""", 'unit': joule/(kelvin*kilogram), 'assumptions': {'real': True},         'latex_name': r'c_{pa}', 'default': 1010.0, 'expr': None})
 c_pamol = type('c_pamol', (Variable,), {'__doc__': """Molar specific heat of dry air.
@@ -255,7 +255,7 @@ eq_Hl_Delta = type('eq_Hl_Delta', (Equation,), {'__doc__': """""", 'expr': Eq(H_
 eq_Pwl_Delta = type('eq_Pwl_Delta', (Equation,), {'__doc__': """""", 'expr': Eq(P_wl, (Delta_eTa*P_wa*c_E - Delta_eTa*(R_ll - R_s) + P_was*c_H)/(c_E*(Delta_eTa + c_H/c_E)))})
 eq_Tl_Delta = type('eq_Tl_Delta', (Equation,), {'__doc__': """""", 'expr': Eq(T_l, (-R_ll + R_s + T_a*c_H + c_E*(Delta_eTa*T_a + P_wa - P_was))/(Delta_eTa*c_E + c_H))})
 eq_Tl_Delta1 = type('eq_Tl_Delta1', (Equation,), {'__doc__': """""", 'expr': Eq(T_l, T_a + (-R_ll + R_s + c_E*(P_wa - P_was))/(Delta_eTa*c_E + c_H))})
-eq_Twl_Delta2 = type('eq_Twl_Delta2', (Equation,), {'__doc__': """""", 'expr': Eq(T_l, M_w*lambda_E/(R_mol*log(p_CC1*(Delta_eTa*c_E + c_H)*exp(M_w*lambda_E/(R_mol*p_CC2))/(Delta_eTa*P_wa*c_E - Delta_eTa*R_ll + Delta_eTa*R_s + P_was*c_H))))})
+eq_Twl_Delta2 = type('eq_Twl_Delta2', (Equation,), {'__doc__': """""", 'expr': Eq(T_l, M_w*lambda_E*p_CC2/(M_w*lambda_E + R_mol*p_CC2*log(p_CC1*(Delta_eTa*c_E + c_H)/(Delta_eTa*P_wa*c_E - Delta_eTa*R_ll + Delta_eTa*R_s + P_was*c_H))))})
 eq_ce_conv = type('eq_ce_conv', (Equation,), {'__doc__': """""", 'expr': Eq(c_E, M_w*g_twmol*lambda_E/P_a)})
 eq_ch_hc = type('eq_ch_hc', (Equation,), {'__doc__': """""", 'expr': Eq(c_H, a_sh*h_c)})
 eq_El_gammav = type('eq_El_gammav', (Equation,), {'__doc__': """""", 'expr': Eq(E_l, -c_H*(P_wa - P_wl)/gamma_v)})
@@ -270,7 +270,7 @@ eq_Tl_Delta_b = type('eq_Tl_Delta_b', (Equation,), {'__doc__': """""", 'expr': E
 eq_El_Delta_MUcorr = type('eq_El_Delta_MUcorr', (Equation,), {'__doc__': """Corrected MU-equation""", 'expr': Eq(E_l, -a_s*epsilon*lambda_E*(Delta_eTa*r_a*(R_ll - R_s) + P_wa*a_sh*c_pa*rho_a - P_was*a_sh*c_pa*rho_a)/(Delta_eTa*a_s*epsilon*lambda_E*r_a + P_a*a_sh*c_pa*(r_a + r_s)))})
 eq_El_MU_corr = type('eq_El_MU_corr', (Equation,), {'__doc__': """Corrected MU-equation, equivalent to Eq. 22 in \citet{schymanski_leaf-scale_2018}""", 'expr': Eq(E_w, (-Delta_eTa*R_ll + Delta_eTa*R_s - P_wa*a_sh*c_pa*rho_a/r_a + P_was*a_sh*c_pa*rho_a/r_a)/(Delta_eTa + a_sh*gamma_v*(1 + r_s/r_a)/a_s))})
 eq_Rll_tang = type('eq_Rll_tang', (Equation,), {'__doc__': """Linearised R_ll.""", 'expr': Eq(R_ll, a_sh*epsilon_l*sigm*(-3*T_a**4 + 4*T_a**3*T_l - T_w**4))})
-eq_El_Delta_Rlllin = type('eq_El_Delta_Rlllin', (Equation,), {'__doc__': """""", 'expr': Eq(E_l, c_E*(Delta_eTa*R_s - Delta_eTa*T_a**4*a_sh*epsilon_l*sigm + Delta_eTa*T_w**4*a_sh*epsilon_l*sigm - 4*P_wa*T_a**3*a_sh*epsilon_l*sigm - P_wa*c_H + 4*P_was*T_a**3*a_sh*epsilon_l*sigm + P_was*c_H)/(Delta_eTa*c_E + 4*T_a**3*a_sh*epsilon_l*sigm + c_H))})
-eq_Hl_Delta_Rlllin = type('eq_Hl_Delta_Rlllin', (Equation,), {'__doc__': """""", 'expr': Eq(H_l, c_H*(P_wa*c_E - P_was*c_E + R_s - T_a**4*a_sh*epsilon_l*sigm + T_w**4*a_sh*epsilon_l*sigm)/(Delta_eTa*c_E + 4*T_a**3*a_sh*epsilon_l*sigm + c_H))})
-eq_Pwl_Delta_Rlllin = type('eq_Pwl_Delta_Rlllin', (Equation,), {'__doc__': """""", 'expr': Eq(P_wl, (Delta_eTa*P_wa*c_E + Delta_eTa*R_s - Delta_eTa*T_a**4*a_sh*epsilon_l*sigm + Delta_eTa*T_w**4*a_sh*epsilon_l*sigm + 4*P_was*T_a**3*a_sh*epsilon_l*sigm + P_was*c_H)/(Delta_eTa*c_E + 4*T_a**3*a_sh*epsilon_l*sigm + c_H))})
-eq_Tl_Delta_Rlllin = type('eq_Tl_Delta_Rlllin', (Equation,), {'__doc__': """""", 'expr': Eq(T_l, (P_wa*c_E + R_s + 3*T_a**4*a_sh*epsilon_l*sigm + T_a*c_H + T_w**4*a_sh*epsilon_l*sigm + c_E*(Delta_eTa*T_a - P_was))/(Delta_eTa*c_E + 4*T_a**3*a_sh*epsilon_l*sigm + c_H))})
+eq_El_Delta_Rlllin = type('eq_El_Delta_Rlllin', (Equation,), {'__doc__': """Based on eq_Rll_tang""", 'expr': Eq(E_l, c_E*(Delta_eTa*R_s - Delta_eTa*T_a**4*a_sh*epsilon_l*sigm + Delta_eTa*T_w**4*a_sh*epsilon_l*sigm - 4*P_wa*T_a**3*a_sh*epsilon_l*sigm - P_wa*c_H + 4*P_was*T_a**3*a_sh*epsilon_l*sigm + P_was*c_H)/(Delta_eTa*c_E + 4*T_a**3*a_sh*epsilon_l*sigm + c_H))})
+eq_Hl_Delta_Rlllin = type('eq_Hl_Delta_Rlllin', (Equation,), {'__doc__': """Based on eq_Rll_tang""", 'expr': Eq(H_l, c_H*(P_wa*c_E - P_was*c_E + R_s - T_a**4*a_sh*epsilon_l*sigm + T_w**4*a_sh*epsilon_l*sigm)/(Delta_eTa*c_E + 4*T_a**3*a_sh*epsilon_l*sigm + c_H))})
+eq_Pwl_Delta_Rlllin = type('eq_Pwl_Delta_Rlllin', (Equation,), {'__doc__': """Based on eq_Rll_tang""", 'expr': Eq(P_wl, (Delta_eTa*P_wa*c_E + Delta_eTa*R_s - Delta_eTa*T_a**4*a_sh*epsilon_l*sigm + Delta_eTa*T_w**4*a_sh*epsilon_l*sigm + 4*P_was*T_a**3*a_sh*epsilon_l*sigm + P_was*c_H)/(Delta_eTa*c_E + 4*T_a**3*a_sh*epsilon_l*sigm + c_H))})
+eq_Tl_Delta_Rlllin = type('eq_Tl_Delta_Rlllin', (Equation,), {'__doc__': """Based on eq_Rll_tang""", 'expr': Eq(T_l, (P_wa*c_E + R_s + 3*T_a**4*a_sh*epsilon_l*sigm + T_a*c_H + T_w**4*a_sh*epsilon_l*sigm + c_E*(Delta_eTa*T_a - P_was))/(Delta_eTa*c_E + 4*T_a**3*a_sh*epsilon_l*sigm + c_H))})

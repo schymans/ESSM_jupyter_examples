@@ -1,0 +1,21 @@
+name: base
+channels:
+  - https://artefacts.list.lu/artifactory/api/conda/conda-forge
+  - https://artefacts.list.lu/artifactory/api/conda/bioconda
+dependencies:
+  - python=3.8
+  - cython
+  - ipykernel
+  - jupyterlab
+  - pandas
+  - numpy
+  - scipy
+  - scikit-learn
+  - matplotlib
+  - openpyxl
+  - setuptools<68
+  - itables
+  - pip
+  - pip:
+    - sympy==1.3
+    - essm==0.4.3
