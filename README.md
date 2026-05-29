@@ -24,3 +24,12 @@ The notebook [E_PM_eqs_essm.ipynb](https://github.com/schymans/ESSM_jupyter_exam
 
 The notebooks [Priestley-Taylor_short.ipynb](https://github.com/schymans/ESSM_jupyter_examples/blob/master/Priestley-Taylor_short.ipynb) and [Priestley-Taylor_equation1.ipynb](https://github.com/schymans/ESSM_jupyter_examples/blob/master/Priestley-Taylor_equation1.ipynb) illustrate the benefit of ESSM's automatic dimensional consistency testing, and how to analyse and repair equations with inconsistent units.
 
+## Running the notebooks locally
+The best approach is to create a dedicated conda/mamba environment with required dependencies. The repo contains a file (environment.yml) with all required information. To create a conda/mamba environment based on this file, use a terminal, and in the cloned folder, execute:
+```
+mamba env create -n essm -f environment.yml
+mamba activate fortress
+jupyter lab
+```
+This will create a mamba environment called essm with the dependencies listed in environment.yml, activate the environment and then start jupyter.
+
